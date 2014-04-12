@@ -6,48 +6,29 @@ import SonatypeKeys._
 
 object AppBuilder extends Build {
   
-  val VERSION = "0.0.9"
+  val VERSION = "0.0.9-SNAPSHOT"
   val SCALA_VERSION = "2.10.3"
   val ORG = "com.github.scullxbones"
-  val POM_XTRA = {
-  <url>https://github.com/scullxbones/akka-persistence-mongo</url>
-  <licenses>
-    <license>
-      <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:git:github.com/scullxbones/akka-persistence-mongo.git</connection>
-    <developerConnection>scm:git:git@github.com:scullxbones/akka-persistence-mongo.git</developerConnection>
-    <url>github.com/scullxbones/akka-persistence-mongo.git</url>
-  </scm>
-  <developers>
-    <developer>
-      <id>scullxbones</id>
-      <name>Brian Scully</name>
-      <url>https://github.com/scullxbones/</url>
-    </developer>
-  </developers>
-  }
 
   def projectSettings(moduleName: String) = 
     Seq(name := "akka-persistence-mongo-"+moduleName, 
         organization := ORG,
         version := VERSION,
         scalaVersion := SCALA_VERSION,
-        pomExtra := POM_XTRA,
-	scalacOptions ++= Seq("-unchecked", "-deprecation","-feature")) ++ sonatypeSettings
+        credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+        publishTo := Some("Sonatype Snapshots Nexus" at "http://192.168.0.105:8081/nexus/content/repositories/snapshots"),
+	scalacOptions ++= Seq("-unchecked", "-deprecation","-feature"))
   
   val commonSettings = projectSettings("common")
 
   val casbahSettings = projectSettings("casbah")
 
-  val rxmongoSettings = projectSettings("rxmongo")
+  //val rxmongoSettings = projectSettings("rxmongo")
   
-  lazy val aRootNode = Project("root", file("."))
-			.settings (packagedArtifacts in file(".") := Map.empty)
-			.aggregate(common,casbah,rxmongo)
+  //lazy val aRootNode = Project("root", file("."))
+			//.settings (packagedArtifacts in file(".") := Map.empty)
+//			.aggregate(common,casbah,rxmongo)
+//			.aggregate(common,casbah)
 
   lazy val common = Project("common", file("common"))
     .settings(commonSettings : _*)
@@ -60,11 +41,11 @@ object AppBuilder extends Build {
     .settings(resolvers ++= projectResolvers)
     .dependsOn(common % "test->test;compile->compile")
 
-  lazy val rxmongo = Project("rxmongo", file("rxmongo"))
-    .settings(rxmongoSettings : _*)
-    .settings(libraryDependencies ++= rxmongoDependencies)
-    .settings(resolvers ++= projectResolvers)
-    .dependsOn(common % "test->test;compile->compile")
+//  lazy val rxmongo = Project("rxmongo", file("rxmongo"))
+//    .settings(rxmongoSettings : _*)
+//    .settings(libraryDependencies ++= rxmongoDependencies)
+//    .settings(resolvers ++= projectResolvers)
+//    .dependsOn(common % "test->test;compile->compile")
 
 
 }

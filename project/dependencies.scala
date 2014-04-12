@@ -2,17 +2,20 @@ import sbt._
 
 object Dependencies {
 
-  val typesafeReleases = "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/"
-  val typesafeSnapshots = "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/"
-  val local = "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
-  val akkap_tck = "krasserm at bintray" at "http://dl.bintray.com/krasserm/maven"
+    val coinport_repo = "coinport-repo" at "http://192.168.0.105:8081/nexus/content/groups/public"
+    val typesafeReleases = "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/"
+    val typesafeSnapshots = "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/"
+    val local = "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
+    val akkap_tck = "krasserm at bintray" at "http://dl.bintray.com/krasserm/maven"
 
-  val projectResolvers = Seq(
-    typesafeReleases,
-    typesafeSnapshots,
-    Resolver.sonatypeRepo("snapshots"),
-    akkap_tck
-  )
+    val projectResolvers = Seq(
+        coinport_repo,
+        typesafeReleases,
+        typesafeSnapshots,
+        Resolver.sonatypeRepo("snapshots"),
+        akkap_tck
+        
+        )
 
   val scalatest = "org.scalatest" %% "scalatest" % "2.0" % "test"
   val junit = "junit" % "junit" % "4.11" % "test"
