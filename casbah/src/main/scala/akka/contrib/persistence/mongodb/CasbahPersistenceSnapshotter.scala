@@ -1,6 +1,7 @@
 package akka.contrib.persistence.mongodb
 
-import akka.persistence.SelectedSnapshot
+import akka.persistence.{SelectedSnapshot, SnapshotMetadata}
+import akka.persistence.serialization.Snapshot
 import com.mongodb.DBObject
 import com.mongodb.casbah.Imports._
 import scala.concurrent._
@@ -16,11 +17,14 @@ object CasbahPersistenceSnapshotter {
 	    MongoDBObject(PROCESSOR_ID -> snapshot.metadata.processorId,
 	      SEQUENCE_NUMBER -> snapshot.metadata.sequenceNr,
 	      TIMESTAMP -> snapshot.metadata.timestamp,
-	      SERIALIZED -> serialization.serializerFor(classOf[SelectedSnapshot]).toBinary(snapshot))
+	      SERIALIZED -> serialization.serializerFor(classOf[Snapshot]).toBinary(Snapshot(snapshot.snapshot)))
 	      
   implicit def deserializeSnapshot(document: DBObject)(implicit serialization: Serialization): SelectedSnapshot = {
-     val content = document.as[Array[Byte]](SERIALIZED)
-     serialization.deserialize(content, classOf[SelectedSnapshot]).get
+     val processorId = document.as[String](PROCESSOR_ID)
+     val sequenceNr = document.as[Long](SEQUENCE_NUMBER)
+     val timestamp = document.as[Long](TIMESTAMP)
+    val content = document.as[Array[Byte]](SERIALIZED)
+     SelectedSnapshot(SnapshotMetadata(processorId, sequenceNr, timestamp), serialization.deserialize(content, classOf[Snapshot]).get.data)
    }
   
 }
