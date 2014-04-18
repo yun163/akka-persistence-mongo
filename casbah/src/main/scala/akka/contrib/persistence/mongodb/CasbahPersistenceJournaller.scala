@@ -71,10 +71,10 @@ class CasbahPersistenceJournaller(driver: CasbahPersistenceDriver) extends Mongo
   }
 
   private[mongodb] override def appendToJournal(documents: TraversableOnce[PersistentRepr])(implicit ec: ExecutionContext) = Future {
-    driver.breaker.withSyncCircuitBreaker {
+//    driver.breaker.withSyncCircuitBreaker {
       journal.insert(documents.toSeq:_*)(serializeJournal,writeConcern)
       ()
-    }
+//    }
   }.mapTo[Unit]
   
   private[this] def hardOrSoftDelete(query: DBObject, hard: Boolean)(implicit ec: ExecutionContext):Unit =
